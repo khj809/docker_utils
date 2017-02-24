@@ -2,7 +2,12 @@
 some utility codes to make use of Docker easily
 
 ## dredit (docker-remote-edit)
-This shell script is used when you need to edit files inside Docker containers at your host remotely.
+This shell script is used when you need to edit files inside Docker containers at your host remotely. 
+
+The usage is as follow:
+```
+dredit [CONTAINER ID] /path/to/the/file/inside/container
+```
 
 The logic of ```dredit``` is as follow:
 - copy the file from docker container to host
