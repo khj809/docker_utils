@@ -1,0 +1,29 @@
+#!/bin/sh
+set -e
+
+CONTAINER=$1
+FILEPATH=$2
+BASE=$(basename $FILEPATH)
+DIR=$(dirname $FILEPATH)
+TMPDIR=/tmp/dredit_$(date +%s)/
+CPFROMDOCKER="docker cp "$CONTAINER:$FILEPATH" "$TMPDIR$BASE
+CPTODOCKER="docker cp "$TMPDIR$BASE" "$CONTAINER:$FILEPATH
+
+mkdir $TMPDIR
+$CPFROMDOCKER
+fswatch -o $TMPDIR | xargs -n1 bash -c "$CPTODOCKER" &>/dev/null &
+FSWATCHPID=`ps -ef | grep "fswatch -o "$TMPDIR | grep -v "grep" | awk '{print $2}'`
+
+atom $TMPDIR$BASE
+ATOMPID=`ps -ef | grep Atom | grep $TMPDIR$BASE | awk '{print $2}'`
+while true; do
+    if ps -p $ATOMPID > /dev/null
+    then
+        sleep 1
+    else
+        kill -9 $FSWATCHPID
+        rm -rf $TMPDIR
+        break
+    fi
+done &
+
