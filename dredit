@@ -9,8 +9,14 @@ TMPDIR=/tmp/dredit_$(date +%s)/
 CPFROMDOCKER="docker cp "$CONTAINER:$FILEPATH" "$TMPDIR$BASE
 CPTODOCKER="docker cp "$TMPDIR$BASE" "$CONTAINER:$FILEPATH
 
+hash docker 2> /dev/null || (echo "Docker is not installed."; exit 1)
+hash fswatch 2> /dev/null || (echo "fswatch is not installed."; exit 1)
+hash atom 2> /dev/null || (echo "Atom is not installed."; exit 1)
+
+docker ps | grep $CONTAINER > /dev/null || (echo "Container "$CONTAINER" does not exist."; exit 1)
+
 mkdir $TMPDIR
-$CPFROMDOCKER
+$CPFROMDOCKER 2> /dev/null || (echo "Failed to copy "$FILEPATH" from container "$CONTAINER".\nMaybe file does not exist."; exit 1)
 fswatch -o $TMPDIR | xargs -n1 bash -c "$CPTODOCKER" &>/dev/null &
 FSWATCHPID=`ps -ef | grep "fswatch -o "$TMPDIR | grep -v "grep" | awk '{print $2}'`
 
