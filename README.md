@@ -1,8 +1,8 @@
 # docker_utils
-some utility codes to make use of docker easily
+some utility codes to make use of Docker easily
 
-## dredit
-This shell script is used when you need to edit files inside docker containers at your host remotely.
+## dredit (docker-remote-edit)
+This shell script is used when you need to edit files inside Docker containers at your host remotely.
 
 The logic of ```dredit``` is as follow:
 - copy the file from docker container to host
